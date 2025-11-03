@@ -1,0 +1,6 @@
+artifact_location: file:///c:/Users/kamel/Documents/Openclassroom_projets/P7/Mes_notebooks/mlruns/766489209950690584
+creation_time: 1762164380301
+experiment_id: '766489209950690584'
+last_update_time: 1762164380301
+lifecycle_stage: active
+name: Tweet_Sentiment_LogReg_Optuna

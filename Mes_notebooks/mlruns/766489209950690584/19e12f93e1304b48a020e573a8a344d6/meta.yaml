@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/kamel/Documents/Openclassroom_projets/P7/Mes_notebooks/mlruns/766489209950690584/19e12f93e1304b48a020e573a8a344d6/artifacts
+end_time: 1762164436386
+entry_point_name: ''
+experiment_id: '766489209950690584'
+lifecycle_stage: active
+run_id: 19e12f93e1304b48a020e573a8a344d6
+run_name: Optuna_NoScaler_Parent
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762164380401
+status: 3
+tags: []
+user_id: kamel

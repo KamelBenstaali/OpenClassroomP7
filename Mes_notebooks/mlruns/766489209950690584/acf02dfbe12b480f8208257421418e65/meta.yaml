@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/kamel/Documents/Openclassroom_projets/P7/Mes_notebooks/mlruns/766489209950690584/acf02dfbe12b480f8208257421418e65/artifacts
+end_time: 1762164405518
+entry_point_name: ''
+experiment_id: '766489209950690584'
+lifecycle_stage: active
+run_id: acf02dfbe12b480f8208257421418e65
+run_name: trial_0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762164380636
+status: 3
+tags: []
+user_id: kamel
