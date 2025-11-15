@@ -1,2 +1,9 @@
-sentiment140
-Workflows_conception
+.p7venv/
+sentiment140/
+Workflows_conception/
+install_python3.10_in_ubuntu.txt
+.python-version
+RL_Lemma_VS_Stem.png
+Mes_notebooks/Model_1_simple/mlruns/
+Mes_notebooks/Model_2_advanced/mlruns/
+Mes_notebooks/Model_2_advanced/models/
