@@ -13,3 +13,6 @@ Mes_notebooks/Model_3_USE/mlruns
 Mes_notebooks/Model_4_BERTweet/bertweet_outputs
 Mes_notebooks/Model_4_BERTweet/mlruns
 Mes_notebooks/Model_4_BERTweet/bertweet_model_package
+Mes_notebooks/Model_5_DISTILBERT/distilbert_model_package
+Mes_notebooks/Model_5_DISTILBERT/distilbert_outputs
+Mes_notebooks/Model_5_DISTILBERT/mlruns
