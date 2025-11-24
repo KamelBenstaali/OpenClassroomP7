@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 
-MODEL_ROOT = Path("/home/kamel/Openclassroom_projets/P7/Mes_notebooks/Model_5_DISTILBERT/mlruns/892834068518995705/0ff8ed0ca19144fa88b85afe0359ba84/artifacts/model_package")
+MODEL_ROOT = Path("/home/kamel/Openclassroom_projets/P7/Mes_notebooks/Model_5_DISTILBERT/mlruns/566727379184960707/166819982b6d4592b76043ae66bffb1d/artifacts/model_package")
 
 # load once at startup
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ROOT / "tokenizer")
