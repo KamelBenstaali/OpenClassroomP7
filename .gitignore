@@ -16,5 +16,6 @@ Mes_notebooks/Model_5_DISTILBERT/distilbert_model_package
 Mes_notebooks/Model_5_DISTILBERT/distilbert_outputs
 Mes_notebooks/Model_5_DISTILBERT/mlruns
 Mes_notebooks/Model_5_DISTILBERT/CHANGELOG.md
+Mes_notebooks/Model_5_DISTILBERT/old_CHANGELOG.md
 app/FastApi/__pycache__
 app/FastApi/fonctionnalités_fastapi.txt
