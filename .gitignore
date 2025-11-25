@@ -15,6 +15,7 @@ Mes_notebooks/Model_4_BERTweet/bertweet_model_package
 Mes_notebooks/Model_5_DISTILBERT/distilbert_model_package
 Mes_notebooks/Model_5_DISTILBERT/distilbert_outputs
 Mes_notebooks/Model_5_DISTILBERT/mlruns
+Mes_notebooks/Model_5_DISTILBERT/artifacts/
 Mes_notebooks/Model_5_DISTILBERT/CHANGELOG.md
 Mes_notebooks/Model_5_DISTILBERT/old_CHANGELOG.md
 app/FastApi/__pycache__
