@@ -14,9 +14,13 @@ RL_Lemma_VS_Stem.png
 
 # Expérimentations MLflow (modeles 1 et 2)
 Mes_notebooks/Model_1_simple/mlruns/
-Mes_notebooks/Model_2_advanced/mlruns/
+Mes_notebooks/Model_1_simple/artifacts/
+Mes_notebooks/Model_1_simple/logreg_model_package_minmaxscaler/
+Mes_notebooks/Model_1_simple/logreg_model_package_noscaler/
+Mes_notebooks/Model_1_simple/logreg_model_package_standardscaler/
 
 # Artifacts, runs et checkpoints du modèle 2
+Mes_notebooks/Model_2_advanced/mlruns/
 Mes_notebooks/Model_2_advanced/models/
 Mes_notebooks/Model_2_advanced/.ipynb_checkpoints/
 Mes_notebooks/Model_2_advanced/artifacts/
