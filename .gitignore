@@ -1,20 +1,39 @@
+# Environnement virtuel local
 .p7venv/
+
+# Jeu de données volumineux
 sentiment140/
+
+# Notes et ressources hors code
 Workflows_conception/
 install_python3.10_in_ubuntu.txt
 .python-version
+
+# Visuels générés
 RL_Lemma_VS_Stem.png
+
+# Expérimentations MLflow (modeles 1 et 2)
 Mes_notebooks/Model_1_simple/mlruns/
 Mes_notebooks/Model_2_advanced/mlruns/
+
+# Artifacts et checkpoints du modèle 2
 Mes_notebooks/Model_2_advanced/models/
 Mes_notebooks/Model_2_advanced/.ipynb_checkpoints/
+
+# Artifacts et runs du modèle 3 (USE)
 Mes_notebooks/Model_3_USE/mlruns
 Mes_notebooks/Model_3_USE/artifacts/
 Mes_notebooks/Model_3_USE/use_model_package/
+
+# Artifacts et runs du modèle 4 (DistilBERT)
 Mes_notebooks/Model_4_DISTILBERT/artifacts/
 Mes_notebooks/Model_4_DISTILBERT/distilbert_model_package
 Mes_notebooks/Model_4_DISTILBERT/mlruns
 Mes_notebooks/Model_4_DISTILBERT/CHANGELOG.md
+
+# Caches/notes FastAPI locales
 app/FastApi/__pycache__
 app/FastApi/fonctionnalités_fastapi.txt
+
+# Paquet clé CUDA téléchargé
 cuda-keyring_1.1-1_all.deb
