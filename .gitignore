@@ -1,6 +1,10 @@
 # Environnement virtuel local
 .p7venv/
 
+app/FastApi/__init__.py
+app/__init__.py
+app/__pycache__/
+
 # Jeu de données volumineux
 sentiment140/
 

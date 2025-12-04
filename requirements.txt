@@ -157,10 +157,11 @@ nvidia-nccl-cu12==2.21.5
 nvidia-nvjitlink-cu12==12.8.93
 nvidia-nvshmem-cu12==3.3.20
 nvidia-nvtx-cu12==12.1.105
-opentelemetry-api==1.38.0
-opentelemetry-proto==1.38.0
-opentelemetry-sdk==1.38.0
-opentelemetry-semantic-conventions==0.59b0
+azure-monitor-opentelemetry==1.8.2
+opentelemetry-api==1.36.0
+opentelemetry-proto==1.36.0
+opentelemetry-sdk==1.36.0
+opentelemetry-semantic-conventions==0.57b0
 opt_einsum==3.4.0
 optree==0.18.0
 optuna==4.6.0
