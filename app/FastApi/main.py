@@ -1,7 +1,9 @@
 # pour run l'appi faire ces 2 commandes en terminal:
-# export APPLICATIONINSIGHTS_CONNECTION_STRING="InstrumentationKey=9263ed5f-8e15-4adc-870c-88b9b6991aa2;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/;ApplicationId=f4e116ca-26f4-4252-b673-57e2fcbb34c1"
-# run with: uvicorn main:app --reload --port 8000
+# (1) Mettre la chaîne dans un fichier .env (non commité) :
+#     APPLICATIONINSIGHTS_CONNECTION_STRING="InstrumentationKey=...;IngestionEndpoint=...;LiveEndpoint=...;ApplicationId=..."
+# (2) Lancer : uvicorn main:app --reload --port 8000
 from pathlib import Path
+import os
 import re
 from typing import Optional
 from fastapi import FastAPI
@@ -10,14 +12,24 @@ from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 
 import logging
+from dotenv import load_dotenv
 # Import the `configure_azure_monitor()` function from the
 # `azure.monitor.opentelemetry` package.
 from azure.monitor.opentelemetry import configure_azure_monitor
 
-# Configure OpenTelemetry to use Azure Monitor with the 
-# APPLICATIONINSIGHTS_CONNECTION_STRING environment variable.
+# Charge automatiquement .env pour éviter d'exporter la variable à chaque lancement.
+load_dotenv()
+APPINSIGHTS_CONN_STR = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
+if not APPINSIGHTS_CONN_STR:
+    raise RuntimeError(
+        "APPLICATIONINSIGHTS_CONNECTION_STRING manquant. "
+        "Ajoutez-le dans un fichier .env (non commité) ou dans l'environnement."
+    )
+
+# Configure OpenTelemetry to use Azure Monitor with the provided connection string.
 configure_azure_monitor(
-    logger_name="DefaultWorkspace-cb3c0f01-20ec-4646-90f4-acaa0bbd95ca-EUS",  # Set the namespace for the logger in which you would like to collect telemetry for if you are collecting logging telemetry. This is imperative so you do not collect logging telemetry from the SDK itself.
+    connection_string=APPINSIGHTS_CONN_STR,
+    logger_name="DefaultWorkspace-cb3c0f01-20ec-4646-90f4-acaa0bbd95ca-EUS",  # namespace pour collecter le logging applicatif, pas celui du SDK lui-même.
 )
 logger = logging.getLogger("DefaultWorkspace-cb3c0f01-20ec-4646-90f4-acaa0bbd95ca-EUS")  # Logging telemetry will be collected from logging calls made with this logger and all of it's children loggers.
 
