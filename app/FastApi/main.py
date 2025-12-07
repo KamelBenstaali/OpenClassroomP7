@@ -20,26 +20,41 @@ from azure.monitor.opentelemetry import configure_azure_monitor
 # Charge automatiquement .env pour éviter d'exporter la variable à chaque lancement.
 load_dotenv()
 APPINSIGHTS_CONN_STR = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
-if not APPINSIGHTS_CONN_STR:
-    raise RuntimeError(
-        "APPLICATIONINSIGHTS_CONNECTION_STRING manquant. "
-        "Ajoutez-le dans un fichier .env (non commité) ou dans l'environnement."
-    )
+TEST_MODE = os.getenv("APP_TEST_MODE") == "1"
 
-# Configure OpenTelemetry to use Azure Monitor with the provided connection string.
-configure_azure_monitor(
-    connection_string=APPINSIGHTS_CONN_STR,
-    logger_name="DefaultWorkspace-cb3c0f01-20ec-4646-90f4-acaa0bbd95ca-EUS",  # namespace pour collecter le logging applicatif, pas celui du SDK lui-même.
-)
+if not APPINSIGHTS_CONN_STR:
+    if TEST_MODE:
+        # Valeur factice pour permettre le lancement local sans Azure.
+        APPINSIGHTS_CONN_STR = (
+            "InstrumentationKey=fake;IngestionEndpoint=http://localhost;"
+            "LiveEndpoint=http://localhost;ApplicationId=fake"
+        )
+    else:
+        raise RuntimeError(
+            "APPLICATIONINSIGHTS_CONNECTION_STRING manquant. "
+            "Ajoutez-le dans un fichier .env (non commité) ou dans l'environnement."
+        )
+
+if not TEST_MODE:
+    # Configure OpenTelemetry to use Azure Monitor with the provided connection string.
+    configure_azure_monitor(
+        connection_string=APPINSIGHTS_CONN_STR,
+        logger_name="DefaultWorkspace-cb3c0f01-20ec-4646-90f4-acaa0bbd95ca-EUS",  # namespace pour collecter le logging applicatif, pas celui du SDK lui-même.
+    )
 logger = logging.getLogger("DefaultWorkspace-cb3c0f01-20ec-4646-90f4-acaa0bbd95ca-EUS")  # Logging telemetry will be collected from logging calls made with this logger and all of it's children loggers.
 
 MODEL_ROOT = Path("/home/kamel/Openclassroom_projets/P7/Mes_notebooks/Model_4_DISTILBERT/distilbert_model_package")
 
 
+def build_classifier():
+    """Return inference pipeline backed by the finetuned model."""
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ROOT / "tokenizer")
+    model = AutoModelForSequenceClassification.from_pretrained(MODEL_ROOT / "hf_model")
+    return pipeline("text-classification", model=model, tokenizer=tokenizer, device=-1)  # set to 0 if you have GPU
+
+
 # load once at startup
-tokenizer = AutoTokenizer.from_pretrained(MODEL_ROOT / "tokenizer")
-model = AutoModelForSequenceClassification.from_pretrained(MODEL_ROOT / "hf_model")
-clf = pipeline("text-classification", model=model, tokenizer=tokenizer, device=-1)  # set to 0 if you have GPU
+clf = build_classifier()
 
 LABEL_MAP = {
     "LABEL_0": "negative",
@@ -81,7 +96,9 @@ class Feedback(BaseModel):
 def predict(item: Item):
     cleaned = preprocess(item.text)
     result = clf(cleaned)[0]  # e.g. {'label': 'LABEL_1', 'score': 0.98}
-    friendly_label = LABEL_MAP.get(result["label"], result["label"])
+    raw_label = result["label"]
+    # Normalize label to friendly lower-case even if the model returns custom strings.
+    friendly_label = LABEL_MAP.get(raw_label, LABEL_MAP.get(str(raw_label).upper(), raw_label)).lower()
     return {
         "label": friendly_label,
         "score": result["score"],
