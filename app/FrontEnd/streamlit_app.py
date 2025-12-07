@@ -1,5 +1,7 @@
+import json
 import os
 from base64 import b64encode
+from html import escape
 from pathlib import Path
 
 import requests
@@ -12,6 +14,7 @@ FEEDBACK_API_URL = os.getenv("FEEDBACK_API_URL", API_URL.replace("/predict", "/f
 ASSETS_DIR = Path(__file__).resolve().parent / "asserts"
 ICON_PATH = str(ASSETS_DIR / "AirParadis_logo.png")
 HERO_BG = ASSETS_DIR / "AirParadis_landing.png"
+HISTORY_FILE = Path(__file__).resolve().parent / "conversation_history.txt"
 
 
 def to_data_uri(path: Path) -> str:
@@ -69,15 +72,31 @@ st.markdown(
         width: 100%;
         max-width: 960px;
         height: auto;
+        max-height: 450px;
         object-fit: contain; /* keep entire image */
         background: transparent;
         border-radius: 16px;
         border: none;
         display: block;
         margin: 0 auto;
+        padding: 0;
     }
     .hero h3 {margin: 0; padding: 0;}
     .hero p {margin: 6px 0 0 0; color: #000; font-size: 15px; line-height: 1.5;}
+    /* History */
+    .history-card {padding: 16px;}
+    .history-item {padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 10px; background: rgba(255,255,255,0.02);}
+    .history-header {display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; color:#e9eef5;}
+    .history-text {
+        background: rgba(255,255,255,0.04);
+        padding: 10px;
+        border-radius: 10px;
+        color: #000;
+        white-space: pre-wrap;       /* keep user spacing but wrap lines */
+        word-break: break-word;      /* break long tokens */
+        overflow-wrap: anywhere;     /* ensure overflow never spills */
+        max-width: 100%;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -102,17 +121,24 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+if "last_pred" not in st.session_state:
+    st.session_state["last_pred"] = None
+if "feedback_status" not in st.session_state:
+    st.session_state["feedback_status"] = None
+if "history" not in st.session_state:
+    st.session_state["history"] = []
+if "show_history" not in st.session_state:
+    st.session_state["show_history"] = False
+
 example_texts = [
     "I love how friendly this app is!",
     "The experience was terrible and frustrating.",
     "It works but I'm not impressed.",
 ]
 text = example_texts[0]
-
-if "last_pred" not in st.session_state:
-    st.session_state["last_pred"] = None
-if "feedback_status" not in st.session_state:
-    st.session_state["feedback_status"] = None
+show_history = st.session_state["show_history"]
+submit = False
+use_example = "(aucun)"
 
 
 def call_api(payload: dict):
@@ -133,6 +159,26 @@ def send_feedback(payload: dict):
         return None, str(exc)
 
 
+def persist_history(entry: dict):
+    """Append prediction entry to a local history file (one JSON per line)."""
+    try:
+        HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with HISTORY_FILE.open("a", encoding="utf-8") as f:
+            json.dump(
+                {
+                    "text": entry.get("text"),
+                    "label": entry.get("label"),
+                    "score": entry.get("score"),
+                },
+                f,
+                ensure_ascii=False,
+            )
+            f.write("\n")
+    except Exception:
+        # Don't block UI on persistence errors
+        pass
+
+
 # ---- Input section ----
 st.divider()
 st.markdown("#### Votre texte")
@@ -142,7 +188,7 @@ with st.container():
         text = st.text_area(" ", height=150, label_visibility="collapsed", placeholder="Saisissez un tweet à analyser ici...")
     with col_action:
         st.markdown("###### Exemples")
-        use_example = st.selectbox(" ", options=["(aucun)"] + example_texts, index=None, label_visibility="collapsed")
+        use_example = st.selectbox(" ", options=["(aucun)"] + example_texts, index=0, label_visibility="collapsed")
         submit = st.button("Analyser", use_container_width=True)
 
 if use_example != "(aucun)":
@@ -164,6 +210,18 @@ if submit:
                 "label": data.get("label"),
                 "score": data.get("score"),
             }
+            new_entry = {
+                "text": text,
+                "label": data.get("label"),
+                "score": data.get("score"),
+            }
+            st.session_state["history"].insert(
+                0,
+                new_entry,
+            )
+            # Keep a small buffer to avoid unbounded growth in session
+            st.session_state["history"] = st.session_state["history"][:50]
+            persist_history(new_entry)
             st.session_state["feedback_status"] = None
 
 last_pred = st.session_state.get("last_pred")
@@ -233,3 +291,44 @@ if last_pred:
         else:
             st.success("Merci, votre signalement a été transmis.")
             st.session_state["feedback_status"] = "sent"
+
+# ---- History toggle & display (below prediction/feedback) ----
+toggle_label = "Masquer l'historique" if st.session_state["show_history"] else "Afficher l'historique"
+if st.button(toggle_label, key="history_toggle", use_container_width=True):
+    st.session_state["show_history"] = not st.session_state["show_history"]
+    show_history = st.session_state["show_history"]
+    st.rerun()
+show_history = st.session_state["show_history"]
+if show_history:
+    history_items = st.session_state["history"]
+    header_cols = st.columns([5, 1])
+    with header_cols[0]:
+        st.markdown("### Historique des prédictions")
+    with header_cols[1]:
+        if st.button("Vider l'historique", key="clear_history", use_container_width=True):
+            st.session_state["history"] = []
+            try:
+                HISTORY_FILE.unlink(missing_ok=True)
+            except Exception:
+                pass
+            st.rerun()
+
+    if not history_items:
+        st.info("Aucune prédiction enregistrée pour le moment.")
+    else:
+        history_html = '<div class="card history-card">'
+        for idx, item in enumerate(history_items, start=1):
+            hist_label = (item.get("label") or "inconnu")
+            hist_badge = "badge-positive" if hist_label.lower() == "positive" else "badge-negative"
+            hist_text = escape(item.get("text") or "")
+            history_html += f"""
+<div class="history-item">
+    <div class="history-header">
+        <div class="history-text">{hist_text}</div>
+        <div class="badge {hist_badge}">{hist_label.upper()}</div>
+    </div>
+    
+</div>
+"""
+        history_html += "</div>"
+        st.markdown(history_html, unsafe_allow_html=True)
