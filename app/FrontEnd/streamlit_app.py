@@ -272,8 +272,8 @@ def render_app():
                 help="Référence sur laquelle portera votre signalement.",
             )
             expected_label = st.selectbox(
-                "Label attendu (optionnel)",
-                options=["(inconnu)", "positive", "negative"],
+                "Label attendu",
+                options=["positive", "negative"],
                 index=0,
             )
             comment = st.text_area(
@@ -281,15 +281,15 @@ def render_app():
                 height=90,
                 placeholder="Pourquoi pensez-vous que la prédiction est incorrecte ?",
             )
-            send = st.form_submit_button("Signaler une mauvaise prédiction", use_container_width=True)
+            send = st.form_submit_button("Signaler une prédiction", use_container_width=True)
 
         if send:
             payload = {
                 "text": last_pred["text"],
                 "predicted_label": last_pred["label"],
                 "score": last_pred["score"],
-                "expected_label": expected_label if expected_label != "(inconnu)" else None,
-                "comment": comment or None,
+                "expected_label": expected_label,
+                "comment": comment or None
             }
             with st.spinner("Envoi du signalement..."):
                 feedback_resp, feedback_err = send_feedback(payload)
@@ -329,14 +329,14 @@ def render_app():
                 hist_label = (item.get("label") or "inconnu")
                 hist_badge = "badge-positive" if hist_label.lower() == "positive" else "badge-negative"
                 hist_text = escape(item.get("text") or "")
-                history_html += f"""
-                <div class="history-item">
-                    <div class="history-header">
-                        <div class="history-text">{hist_text}</div>
-                        <div class="badge {hist_badge}">{hist_label.upper()}</div>
-                    </div> 
-                </div>
-                """
+                history_html += (
+                    '<div class="history-item">'
+                    '<div class="history-header">'
+                    f'<div class="history-text">{hist_text}</div>'
+                    f'<div class="badge {hist_badge}">{hist_label.upper()}</div>'
+                    "</div>"
+                    "</div>"
+                )
             history_html += "</div>"
             st.markdown(history_html, unsafe_allow_html=True)
 

@@ -108,16 +108,22 @@ def predict(item: Item):
 @app.post("/feedback")
 def send_feedback(feedback: Feedback):
     # Logging telemetry will be sent to Azure Application Insights via configure_azure_monitor.
+    is_correct = (
+        feedback.expected_label == feedback.predicted_label if feedback.expected_label else None
+    )
+    # Flatter custom dimensions so they arrivent dans Application Insights sans être sérialisés en chaîne.
+    custom_dims = {
+        "text": preprocess(feedback.text),
+        "predicted_label": feedback.predicted_label,
+        "score": feedback.score,
+        "expected_label": feedback.expected_label,
+        "comment": feedback.comment,
+        "is_correct": is_correct,
+    }
+    # Supprime les clés None pour éviter des chaînes "None" ou des sérialisations inattendues.
+    custom_dims = {k: v for k, v in custom_dims.items() if v is not None}
     logger.warning(
         "prediction_feedback_reported",
-        extra={
-            "custom_dimensions": {
-                "text": preprocess(feedback.text),
-                "predicted_label": feedback.predicted_label,
-                "score": feedback.score,
-                "expected_label": feedback.expected_label,
-                "comment": feedback.comment,
-            }
-        },
+        extra=custom_dims,
     )
     return {"status": "ok"}
