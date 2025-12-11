@@ -1,0 +1,40 @@
+name: Deploy FastAPI to Azure Web App
+
+on:
+  push:
+    branches: [ main ]  # ou ta branche
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies (minimal)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r app/FastApi/requirements.txt
+
+      - name: Prepare deployment manifest
+        run: |
+          cp app/FastApi/requirements.txt ./requirements.txt  # requirements minimal à la racine du zip
+
+      - name: Zip artifact
+        run: |
+          zip -r fastapi.zip app/FastApi requirements.txt
+        # le zip inclut app/FastApi/main.py, model-int8-static.onnx, tokenizer, etc.
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: AirParadisAPI          # remplace par le nom exact de ton app
+          slot-name: production
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: fastapi.zip
