@@ -38,21 +38,28 @@ Mes_notebooks/Model_2_advanced/.ipynb_checkpoints/
 Mes_notebooks/Model_2_advanced/artifacts/
 Mes_notebooks/Model_2_advanced/bilstm_glove_model_package/
 Mes_notebooks/Model_2_advanced/bilstm_w2v_model_package/
+Mes_notebooks/Model_2_advanced/bench.py
 
 # Artifacts et runs du modèle 3 (USE)
 Mes_notebooks/Model_3_USE/mlruns
 Mes_notebooks/Model_3_USE/artifacts/
 Mes_notebooks/Model_3_USE/use_model_package/
+Mes_notebooks/Model_3_USE/bench.py
 
 # Artifacts et runs du modèle 4 (DistilBERT)
 Mes_notebooks/Model_4_DISTILBERT/artifacts/
 Mes_notebooks/Model_4_DISTILBERT/distilbert_model_package
 Mes_notebooks/Model_4_DISTILBERT/mlruns
 Mes_notebooks/Model_4_DISTILBERT/CHANGELOG.md
-
+Mes_notebooks/Model_4_DISTILBERT_LiteRT/
+Mes_notebooks/Model_4_DISTILBERT_tflite/
+Mes_notebooks/Model_4_DISTILBERT_tflite_full_int8/
+Mes_notebooks/Model_4_DISTILBERT_onnx_int8/
 # Caches/notes FastAPI locales
 app/FastApi/__pycache__
 app/FastApi/fonctionnalités_fastapi.txt
+app/doc_Azure_App_Insights
+app/test_performance_ressources
 
 # Paquet clé CUDA téléchargé
 cuda-keyring_1.1-1_all.deb
