@@ -181,8 +181,9 @@ def send_feedback(feedback: Feedback):
     }
     # Supprime les clés None pour éviter des chaînes "None" ou des sérialisations inattendues.
     custom_dims = {k: v for k, v in custom_dims.items() if v is not None}
+    extra_payload = {"custom_dimensions": custom_dims, "customDimensions": custom_dims, **custom_dims}
     logger.warning(
         "prediction_feedback_reported",
-        extra=custom_dims,
+        extra=extra_payload,
     )
     return {"status": "ok"}

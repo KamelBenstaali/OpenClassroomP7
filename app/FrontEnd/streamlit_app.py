@@ -273,7 +273,7 @@ def render_app():
             )
             expected_label = st.selectbox(
                 "Label attendu",
-                options=["positive", "negative"],
+                options=["(inconnu)", "positive", "negative"],
                 index=0,
             )
             comment = st.text_area(
@@ -281,14 +281,15 @@ def render_app():
                 height=90,
                 placeholder="Pourquoi pensez-vous que la prédiction est incorrecte ?",
             )
-            send = st.form_submit_button("Signaler une prédiction", use_container_width=True)
+            send = st.form_submit_button("Signaler une mauvaise prédiction", use_container_width=True)
 
         if send:
+            expected_val = None if expected_label == "(inconnu)" else expected_label
             payload = {
                 "text": last_pred["text"],
                 "predicted_label": last_pred["label"],
                 "score": last_pred["score"],
-                "expected_label": expected_label,
+                "expected_label": expected_val,
                 "comment": comment or None
             }
             with st.spinner("Envoi du signalement..."):
@@ -305,7 +306,8 @@ def render_app():
     if st.button(toggle_label, key="history_toggle", use_container_width=True):
         st.session_state["show_history"] = not st.session_state["show_history"]
         show_history = st.session_state["show_history"]
-        st.rerun()
+        if not APP_TEST_MODE:
+            st.rerun()
     show_history = st.session_state["show_history"]
     if show_history:
         history_items = st.session_state["history"]
@@ -319,7 +321,8 @@ def render_app():
                     HISTORY_FILE.unlink(missing_ok=True)
                 except Exception:
                     pass
-                st.rerun()
+                if not APP_TEST_MODE:
+                    st.rerun()
 
         if not history_items:
             st.info("Aucune prédiction enregistrée pour le moment.")
@@ -341,5 +344,5 @@ def render_app():
             st.markdown(history_html, unsafe_allow_html=True)
 
 
-if not APP_TEST_MODE:
+if os.getenv("APP_TEST_MODE") != "1":
     render_app()
