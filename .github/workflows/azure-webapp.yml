@@ -43,5 +43,15 @@ jobs:
             --sku F1 \
             --runtime "PYTHON:3.10" \
             --location "${{ env.AZURE_LOCATION }}" \
-            --startup-file "python -m uvicorn app.FastApi.main:app --host 0.0.0.0 --port 8000" \
             --src-path .
+
+      - name: Configure app settings and startup command
+        run: |
+          az webapp config appsettings set \
+            -g "${{ env.RESOURCE_GROUP }}" \
+            -n "${{ env.APP_NAME }}" \
+            --settings WEBSITES_PORT=8000 APP_TEST_MODE=1
+          az webapp config set \
+            -g "${{ env.RESOURCE_GROUP }}" \
+            -n "${{ env.APP_NAME }}" \
+            --startup-file "python -m uvicorn app.FastApi.main:app --host 0.0.0.0 --port 8000"
