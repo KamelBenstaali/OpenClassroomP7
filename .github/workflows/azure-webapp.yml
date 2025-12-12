@@ -11,7 +11,7 @@ jobs:
     env:
       APP_NAME: AirParadisAPI            # nom exact de ton App Service
       RESOURCE_GROUP: DefaultResourceGroup-CCAN  # groupe de ressources Azure
-      APP_SERVICE_PLAN: ASP-DefaultResourceGroupCCAN-a48d (F1: 1)  # plan App Service
+      APP_SERVICE_PLAN: ASP-DefaultResourceGroupCCAN-a48d  # plan App Service
       AZURE_LOCATION: canadacentral                  # région
     steps:
       - name: Checkout
