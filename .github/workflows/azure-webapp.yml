@@ -34,15 +34,17 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}   # JSON SPN: {clientId, clientSecret, subscriptionId, tenantId}
 
-      - name: Deploy with az webapp up
+      - name: Prepare deployment package
         run: |
-          az webapp up \
-            --name "${{ env.APP_NAME }}" \
+          cp app/FastApi/requirements.txt ./requirements.txt
+          zip -r fastapi.zip app/FastApi requirements.txt
+
+      - name: Deploy zip with az
+        run: |
+          az webapp deployment source config-zip \
             --resource-group "${{ env.RESOURCE_GROUP }}" \
-            --plan "${{ env.APP_SERVICE_PLAN }}" \
-            --sku F1 \
-            --runtime "PYTHON:3.10" \
-            --location "${{ env.AZURE_LOCATION }}"
+            --name "${{ env.APP_NAME }}" \
+            --src-path fastapi.zip
 
       - name: Configure app settings and startup command
         run: |
