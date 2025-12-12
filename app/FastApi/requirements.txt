@@ -5,3 +5,4 @@ transformers==4.57.3
 onnxruntime==1.23.2
 numpy==2.2.6
 azure-monitor-opentelemetry==1.8.2
+pytest==8.3.4
