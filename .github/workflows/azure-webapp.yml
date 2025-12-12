@@ -42,8 +42,7 @@ jobs:
             --plan "${{ env.APP_SERVICE_PLAN }}" \
             --sku F1 \
             --runtime "PYTHON:3.10" \
-            --location "${{ env.AZURE_LOCATION }}" \
-            --src-path .
+            --location "${{ env.AZURE_LOCATION }}"
 
       - name: Configure app settings and startup command
         run: |
