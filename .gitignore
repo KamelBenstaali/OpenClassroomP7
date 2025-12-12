@@ -55,6 +55,7 @@ Mes_notebooks/Model_4_DISTILBERT_LiteRT/
 Mes_notebooks/Model_4_DISTILBERT_tflite/
 Mes_notebooks/Model_4_DISTILBERT_tflite_full_int8/
 Mes_notebooks/Model_4_DISTILBERT_onnx_int8/
+Mes_notebooks/Model_4_DISTILBERT_LiteRT/bench.py
 # Caches/notes FastAPI locales
 app/FastApi/__pycache__
 app/FastApi/fonctionnalités_fastapi.txt
