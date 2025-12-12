@@ -23,7 +23,8 @@ jobs:
       - name: Install dependencies (minimal) & tests
         run: |
           python -m pip install --upgrade pip
-          pip install -r app/FastApi/requirements.txt
+          pip install -r app/FastApi/requirements.txt pytest
+          export PYTHONPATH="$PWD"
           APP_TEST_MODE=1 APPLICATIONINSIGHTS_CONNECTION_STRING=test pytest tests/test_main.py
 
       - name: Prepare deployment manifest
