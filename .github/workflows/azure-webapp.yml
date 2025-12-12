@@ -8,6 +8,9 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      APP_NAME: AirParadisAPI            # nom exact de ton App Service
+      RESOURCE_GROUP: DefaultResourceGroup-CCAN  # groupe de ressources Azure
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,10 +20,11 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies (minimal)
+      - name: Install dependencies (minimal) & tests
         run: |
           python -m pip install --upgrade pip
           pip install -r app/FastApi/requirements.txt
+          APP_TEST_MODE=1 APPLICATIONINSIGHTS_CONNECTION_STRING=test pytest tests/test_main.py
 
       - name: Prepare deployment manifest
         run: |
@@ -31,10 +35,22 @@ jobs:
           zip -r fastapi.zip app/FastApi requirements.txt
         # le zip inclut app/FastApi/main.py, model-int8-static.onnx, tokenizer, etc.
 
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+
+      - name: Enable Oryx build on deploy (SCM_DO_BUILD_DURING_DEPLOYMENT)
+        run: |
+          az webapp config appsettings set \
+            -g "${{ env.RESOURCE_GROUP }}" \
+            -n "${{ env.APP_NAME }}" \
+            --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: AirParadisAPI          # remplace par le nom exact de ton app
+          app-name: ${{ env.APP_NAME }}
           slot-name: production
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: fastapi.zip
