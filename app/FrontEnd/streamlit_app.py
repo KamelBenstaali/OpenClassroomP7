@@ -11,8 +11,14 @@ import streamlit as st
 APP_TEST_MODE = os.getenv("APP_TEST_MODE") == "1"
 
 # API endpoints
-API_URL = os.getenv("PREDICT_API_URL", "http://localhost:8000/predict")
-FEEDBACK_API_URL = os.getenv("FEEDBACK_API_URL", API_URL.replace("/predict", "/feedback"))
+API_URL = os.getenv(
+    "PREDICT_API_URL",
+    "https://airparadisapi-ezdbgngha3fxc4d6.canadacentral-01.azurewebsites.net/predict",
+)
+FEEDBACK_API_URL = os.getenv(
+    "FEEDBACK_API_URL",
+    API_URL.replace("/predict", "/feedback"),
+)
 
 ASSETS_DIR = Path(__file__).resolve().parent / "asserts"
 ICON_PATH = str(ASSETS_DIR / "AirParadis_logo.png")
