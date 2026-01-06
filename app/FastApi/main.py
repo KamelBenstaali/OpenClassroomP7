@@ -47,7 +47,7 @@ if not TEST_MODE:
 logger = logging.getLogger("DefaultWorkspace-cb3c0f01-20ec-4646-90f4-acaa0bbd95ca-EUS")  # Logging telemetry will be collected from logging calls made with this logger and all of it's children loggers.
 
 MODEL_DIR = Path(__file__).resolve().parent  # model colocated with this file
-ONNX_MODEL_PATH = MODEL_DIR / "model-int8-static.onnx"
+ONNX_MODEL_PATH = MODEL_DIR / "model-int8-dynamic.onnx"
 TOKENIZER_DIR = MODEL_DIR / "tokenizer"
 DEFAULT_TOKENIZER_ID = "distilbert-base-uncased"
 MAX_SEQ_LEN = 128  # sequence length used for ONNX export/quantization

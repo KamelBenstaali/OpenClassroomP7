@@ -2,12 +2,18 @@
 
 Application complète de classification de sentiments sur des textes courts : un backend FastAPI servant un modèle DistilBERT quantifié en ONNX, un frontend Streamlit pour la démonstration et la collecte de retours, des tests automatisés et les notebooks d’entraînement/quantification.
 
+## Description de la mission
+- Contexte : ingénieur IA chez MIC (cabinet marketing). Air Paradis veut anticiper les bad buzz sur Twitter en suivant la perception des clients.
+- Objectif : livrer un prototype fonctionnel d’analyse de sentiments sur tweets en comparant 4 pistes : régression logistique + TF‑IDF/features, BiLSTM avec embeddings pré-entraînés, encodeur de phrases USE + réseau dense, DistilBERT fine-tuné (export ONNX/TFLite).
+- Démarche MLOps : suivi des expériences avec MLflow, CI/CD GitHub Actions vers Azure App Service, tests automatisés backend/frontend, monitoring et feedbacks utilisateur via Azure Application Insights.
+
 ## Arborescence rapide
 - `app/FastApi/` : API FastAPI (`main.py`), modèle ONNX quantifié (`model-int8-static.onnx`), tokenizer et doc de déploiement Azure App Service.
 - `app/FrontEnd/` : interface Streamlit (`streamlit_app.py`), assets (`asserts/`), historique local.
 - `app/doc_Azure_App_Insights/` : requêtes Kusto pour suivre les feedbacks dans Application Insights.
 - `app/test_performance_ressources/` : commandes pour mesurer l’empreinte mémoire/CPU en local.
 - `Mes_notebooks/` : notebooks et artefacts d’entraînement (logreg, BiLSTM, USE, DistilBERT) + scripts de benchmark/quantification (ONNX, TFLite, LiteRT).
+- `Mes_notebooks/Model_4_DISTILBERT_quant/` : quantification ONNX int8 (dynamique/statique) via `quantize_model.py` et notebook `testing_quant_model.ipynb` pour tester le modèle exporté.
 - `sentiment140/` : données d’entraînement (brutes + versions lemmatisées/stemmées).
 - `tests/` : tests Pytest pour l’API et l’app Streamlit.
 - `Workflows_conception/` : notes sur les pistes de modèles.
@@ -60,6 +66,7 @@ APP_TEST_MODE=1 APPLICATIONINSIGHTS_CONNECTION_STRING=test pytest
   - `Model_2_advanced` : BiLSTM avec embeddings Word2Vec/GloVe (+ bench).
   - `Model_3_USE` : Universal Sentence Encoder (+ bench).
   - `Model_4_DISTILBERT` : fine-tuning DistilBERT (MLflow dans `mlruns`), export ONNX/TFLite/LiteRT via scripts `bench.py` ; `model-int8-static.onnx` utilisé par l’API vient de cette piste.
+  - `Model_4_DISTILBERT_quant` : script `quantize_model.py` pour exporter en ONNX et quantifier en int8 (dynamique par défaut, statique possible avec calibration) ; notebook `testing_quant_model.ipynb` pour valider `model-int8-dynamic.onnx` (avec `model-int8.onnx.data`).
   - Variantes de quantification : `Model_4_DISTILBERT_onnx_int8`, `_tflite`, `_tflite_full_int8`, `_LiteRT` avec scripts de mesure RAM/poids.
 - `Workflows_conception` contient les choix de modèles testés.
 
