@@ -64,8 +64,8 @@ app/FastApi/__pycache__
 app/FastApi/fonctionnalités_fastapi.txt
 app/doc_Azure_App_Insights
 app/test_performance_ressources
-app/FastApi/model-int8-dynamic.onnx
-app/FastApi/model-int8.onnx.data
+# app/FastApi/model-int8-dynamic.onnx
+# app/FastApi/model-int8.onnx.data
 
 # Paquet clé CUDA téléchargé
 cuda-keyring_1.1-1_all.deb
